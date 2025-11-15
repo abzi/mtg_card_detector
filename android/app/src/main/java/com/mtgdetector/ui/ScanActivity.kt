@@ -29,6 +29,8 @@ class ScanActivity : AppCompatActivity() {
     private var bulkMode = false
     private val scannedCards = mutableListOf<ScanRequest>()
     private var isProcessing = false
+    private var camera: Camera? = null
+    private var isFlashlightOn = false
 
     private val barcodeScanner = BarcodeScanning.getClient(
         BarcodeScannerOptions.Builder()
@@ -48,8 +50,19 @@ class ScanActivity : AppCompatActivity() {
 
         startCamera()
 
+        binding.btnFlashlight.setOnClickListener {
+            toggleFlashlight()
+        }
+
         binding.btnCapture.setOnClickListener {
-            captureAndScan()
+            val manualInput = binding.cardNameInput.text?.toString()?.trim()
+            if (!manualInput.isNullOrEmpty()) {
+                // Use manual input instead of camera scan
+                scanCard(ScanRequest(cardName = manualInput))
+            } else {
+                // Use camera to scan
+                captureAndScan()
+            }
         }
 
         binding.btnDone.setOnClickListener {
@@ -60,6 +73,16 @@ class ScanActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun toggleFlashlight() {
+        camera?.let {
+            isFlashlightOn = !isFlashlightOn
+            it.cameraControl.enableTorch(isFlashlightOn)
+            binding.btnFlashlight.text = if (isFlashlightOn) "Light ON" else "Light"
+        }
+    }
+
+    private lateinit var imageCapture: ImageCapture
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -73,12 +96,16 @@ class ScanActivity : AppCompatActivity() {
                     it.setSurfaceProvider(binding.previewView.surfaceProvider)
                 }
 
+            imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .build()
+
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview
+                camera = cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview, imageCapture
                 )
             } catch (exc: Exception) {
                 Log.e(TAG, "Camera binding failed", exc)
@@ -89,14 +116,14 @@ class ScanActivity : AppCompatActivity() {
     @androidx.camera.core.ExperimentalGetImage
     private fun captureAndScan() {
         if (isProcessing) return
+        if (!::imageCapture.isInitialized) {
+            Toast.makeText(this, "Camera not ready", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         isProcessing = true
         binding.progressBar.visibility = View.VISIBLE
         binding.statusText.text = "Processing..."
-
-        // For this simplified implementation, we'll use text extraction from camera
-        // In production, you'd capture an actual image here
-        val imageCapture = ImageCapture.Builder().build()
 
         imageCapture.takePicture(
             cameraExecutor,
@@ -193,6 +220,9 @@ class ScanActivity : AppCompatActivity() {
                         val card = response.body()?.card
                         binding.statusText.text = "Added: ${card?.name}"
                         Toast.makeText(this@ScanActivity, "Card added!", Toast.LENGTH_SHORT).show()
+
+                        // Clear the manual input field after successful scan
+                        binding.cardNameInput.text?.clear()
 
                         if (bulkMode) {
                             scannedCards.add(request)
