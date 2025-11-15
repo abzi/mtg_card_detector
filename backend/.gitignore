@@ -1,0 +1,42 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+server
+mtg_card_detector
+
+# Test binary
+*.test
+
+# Output of go build
+bin/
+dist/
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# Go workspace file
+go.work
+
+# Environment files
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
