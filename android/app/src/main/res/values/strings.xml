@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MTG Card Detector</string>
+    <string name="scan_card">Scan Card</string>
+    <string name="view_inventory">View Inventory</string>
+    <string name="bulk_scan">Bulk Scan</string>
+    <string name="single_scan">Single Scan</string>
+    <string name="camera_permission_required">Camera permission is required</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="scanning">Scanning...</string>
+    <string name="card_added">Card added to inventory</string>
+    <string name="scan_failed">Scan failed</string>
+    <string name="inventory">Inventory</string>
+    <string name="total_cards">Total Cards: %d</string>
+    <string name="authenticating">Authenticating...</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="tap_to_scan">Tap to scan a card</string>
+    <string name="processing">Processing...</string>
+    <string name="quantity">Qty: %d</string>
+</resources>

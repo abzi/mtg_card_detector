@@ -1,0 +1,52 @@
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+backend/server
+backend/data/
+
+# Android
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+*.iml
+.gradle
+local.properties
+.idea/
+.DS_Store
+build/
+captures/
+.externalNativeBuild
+.cxx
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Environment
+.env
+*.env
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# Docker
+.dockerignore
+
+# OS
+Thumbs.db
